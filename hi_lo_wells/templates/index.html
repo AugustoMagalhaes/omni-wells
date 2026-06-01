@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hi-lo-wells</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"
+            stroke-linecap="round">
+            <circle cx="12" cy="5" r="2" />
+            <line x1="12" y1="7" x2="12" y2="12" />
+            <circle cx="6" cy="17" r="2" />
+            <circle cx="18" cy="17" r="2" />
+            <line x1="12" y1="12" x2="6" y2="15" />
+            <line x1="12" y1="12" x2="18" y2="15" />
+        </svg>
+        <span class="title">hi-lo-wells</span>
+        <span class="sub">— producer × injector matching</span>
+        <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☾ Dark</button>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar">
+
+            <div class="sb-section">
+                <div class="sb-label">Number format</div>
+                <div class="field">
+                    <label>Decimal separator</label>
+                    <select name="decimal" form="main-form" id="decimal">
+                        <option value=".">. (period)</option>
+                        <option value=",">, (comma)</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Thousands separator</label>
+                    <select name="thousands" form="main-form" id="thousands">
+                        <option value=",">, (comma)</option>
+                        <option value=".">. (period)</option>
+                        <option value="">None</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr class="divider" />
+
+            <div class="sb-section">
+                <div class="sb-label">Import CSV</div>
+                <div class="field">
+                    <label>Column separator</label>
+                    <select name="sep" id="csvsep">
+                        <option value=";">; (semicolon)</option>
+                        <option value=",">, (comma)</option>
+                        <option value="&#9;">Tab</option>
+                    </select>
+                </div>
+                <form id="import-form" hx-post="/import-csv" hx-target="#tbody" hx-encoding="multipart/form-data"
+                    hx-indicator="#spinner">
+                    <input type="hidden" name="thousands" id="imp-thousands" />
+                    <input type="hidden" name="decimal" id="imp-decimal" />
+                    <input type="hidden" name="sep" id="imp-sep" />
+                    <input type="file" name="file" id="import-csv" accept=".csv,.txt"
+                        onchange="syncImportMeta(); this.form.requestSubmit()" />
+                    <button type="button" class="btn btn-ghost" onclick="document.getElementById('import-csv').click()">
+                        📂 Open CSV file
+                    </button>
+                </form>
+                <p class="paste-hint">
+                    Or select a cell and paste with <kbd>Ctrl+V</kbd> directly from Excel.
+                </p>
+            </div>
+
+            <hr class="divider" />
+
+            <div class="sb-section">
+                <div class="sb-label">Actions</div>
+                <button class="btn btn-primary" hx-post="/calculate" hx-include="#main-form" hx-target="#result-area"
+                    hx-indicator="#spinner">
+                    ⚙ Calculate matching
+                </button>
+                <button type="button" class="btn btn-ghost" onclick="addRow()">+ New row</button>
+                <button type="button" class="btn btn-danger" onclick="deleteSelected()">✕ Delete selected</button>
+                <button type="button" class="btn btn-ghost" onclick="clearTable()">🗑 Clear table</button>
+            </div>
+
+            <hr class="divider" />
+
+            <div class="sb-section">
+                <div class="sb-label">Result</div>
+                <button type="button" class="btn btn-green" id="dl-btn" style="display:none" onclick="downloadResult()">
+                    ⬇ Download CSV
+                </button>
+            </div>
+
+            <div id="spinner" class="spinner htmx-indicator"></div>
+
+        </aside>
+
+        <div class="content">
+            <form id="main-form" class="table-card">
+                <input type="hidden" name="row_count" id="row-count" value="{{ rows|length }}" />
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th class="th-check">
+                                    <input type="checkbox" id="select-all" onchange="toggleSelectAll(this)" />
+                                </th>
+                                <th>WELL</th>
+                                <th>X</th>
+                                <th>Y</th>
+                                <th>Z</th>
+                                <th>WEI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+                            {% include "partials/table_body.html" %}
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="add-row-btn" onclick="addRow()">+ add row</button>
+            </form>
+
+            <div id="result-area"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
