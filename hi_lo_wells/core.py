@@ -61,17 +61,25 @@ def run_matching(df: pd.DataFrame) -> tuple[list[list[str]], str]:
     return result, ""
 
 
-def parse_csv_content(
-    content: str, sep: str, thousands: str, decimal: str
-) -> pd.DataFrame:
-    df = pd.read_csv(
-        io.StringIO(content),
-        sep=sep,
-        thousands=thousands if thousands else None,
-        decimal=decimal,
-    )
-    df.columns = [c.strip().upper() for c in df.columns]
-    return df
+def parse_csv_content(content: str, sep: str) -> pd.DataFrame:
+    reader = csv.reader(io.StringIO(content), delimiter=sep)
+    rows = list(reader)
+
+    if not rows:
+        raise ValueError("Empty file.")
+
+    headers = [h.strip().upper() for h in rows[0]]
+    records = []
+
+    for row in rows[1:]:
+        if not any(cell.strip() for cell in row):
+            continue
+        record = {
+            headers[i]: val.strip() for i, val in enumerate(row) if i < len(headers)
+        }
+        records.append(record)
+
+    return pd.DataFrame(records)
 
 
 def rows_to_df(rows: list[list[str]], thousands: str, decimal: str) -> pd.DataFrame:

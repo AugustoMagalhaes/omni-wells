@@ -28,8 +28,6 @@ def index():
 def import_csv():
     file = request.files.get("file")
     sep = request.form.get("sep", ";")
-    thousands = request.form.get("thousands", ",")
-    decimal = request.form.get("decimal", ".")
 
     if not file:
         return render_template(
@@ -41,14 +39,13 @@ def import_csv():
 
     content = file.read().decode("utf-8", errors="replace")
     try:
-        df = parse_csv_content(content, sep=sep, thousands=thousands, decimal=decimal)
+        df = parse_csv_content(content, sep=sep)
         required = {"WELL", "X", "Y", "Z", "WEI"}
         missing = required - set(df.columns)
         if missing:
             raise ValueError(f"Missing columns: {', '.join(sorted(missing))}")
         rows = df[COLS].fillna("").values.tolist()
         rows = [[str(v) for v in row] for row in rows]
-
     except Exception as exc:
         return render_template(
             "partials/table_body.html",
@@ -57,7 +54,6 @@ def import_csv():
             error=str(exc),
         )
 
-    session["rows"] = rows
     return render_template("partials/table_body.html", rows=rows, cols=COLS)
 
 
