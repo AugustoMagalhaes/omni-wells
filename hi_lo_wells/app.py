@@ -28,8 +28,8 @@ def index():
 def import_csv():
     file = request.files.get("file")
     sep = request.form.get("sep", ";")
-    thousands = request.form.get("thousands", ".")
-    decimal = request.form.get("decimal", ",")
+    thousands = request.form.get("thousands", ",")
+    decimal = request.form.get("decimal", ".")
 
     if not file:
         return render_template(
@@ -63,8 +63,8 @@ def import_csv():
 
 @app.route("/calculate", methods=["POST"])
 def calculate():
-    thousands = request.form.get("thousands", ".")
-    decimal = request.form.get("decimal", ",")
+    thousands = request.form.get("thousands", ",")
+    decimal = request.form.get("decimal", ".")
 
     raw_rows = []
     for i in range(int(request.form.get("row_count", 0))):
