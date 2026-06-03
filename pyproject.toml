@@ -7,10 +7,16 @@ name = "hi-lo-wells"
 version = "0.1.0"
 description = "Hi-Lo-Wells"
 requires-python = ">=3.12"
-dependencies = ["flask>=3.0", "pandas>=2.0", "numpy>=1.24"]
+dependencies = [
+    "flask>=3.0",
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "PyQt6>=6.6",
+    "PyQt6-WebEngine>=6.6",
+]
 
 [project.scripts]
-hi-lo-wells = "hi_lo_wells.app:main"
+hi-lo-wells = "hi_lo_wells.qt_app:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
