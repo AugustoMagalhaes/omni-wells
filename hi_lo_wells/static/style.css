@@ -564,3 +564,77 @@ tbody tr.row-selected {
     background: var(--accent);
     color: #fff;
 }
+
+footer {
+    flex-shrink: 0;
+    height: 36px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 16px;
+}
+
+.footer-left {}
+
+.footer-center {
+    display: flex;
+    justify-content: center;
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.footer-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .72rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .15s;
+}
+
+.footer-link:hover {
+    color: var(--accent);
+}
+
+.footer-by {
+    font-size: .72rem;
+    color: var(--muted);
+}
+
+.footer-name {
+    font-size: .72rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.footer-sep {
+    font-size: 1rem;
+    color: var(--muted);
+    margin: 0 2px;
+}
+
+.footer-icon-link {
+    display: flex;
+    align-items: center;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .15s;
+}
+
+.footer-icon-link svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+.footer-icon-link:hover {
+    color: var(--accent);
+}
