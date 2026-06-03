@@ -1,7 +1,5 @@
 import os
 import socket
-import threading
-import webbrowser
 from datetime import datetime
 
 from flask import Flask, Response, render_template, request, session
@@ -116,13 +114,8 @@ def _find_free_port(start: int = 5000) -> int:
 
 def main():
     port = _find_free_port()
-    url = f"http://127.0.0.1:{port}"
-
-    if os.environ.get("HI_LO_WELLS_NO_BROWSER", "0") != "1":
-        threading.Timer(1.2, webbrowser.open, args=[url]).start()
-
-    print(f"  hi-lo-wells  →  {url}")
-    app.run(host="0.0.0.0", port=port, debug=True, use_reloader=False)
+    print(f"  hi-lo-wells  →  http://127.0.0.1:{port}")
+    app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
 
 
 if __name__ == "__main__":
