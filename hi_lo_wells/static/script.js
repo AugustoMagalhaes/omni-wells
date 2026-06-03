@@ -126,13 +126,45 @@ function addRow() {
 
 function deleteSelected() {
     const tbody = document.getElementById("tbody");
+    const selected = [...tbody.rows].filter(tr =>
+        tr.querySelector('input[type="checkbox"]')?.checked
+    );
+    if (!selected.length) return;
+
+    const body = document.getElementById("modal-body");
+    body.innerHTML = "";
+    selected.forEach(tr => {
+        const well = tr.querySelector('input[name^="well_"]')?.value.trim();
+        const x = tr.querySelector('input[name^="x_"]')?.value.trim();
+        const y = tr.querySelector('input[name^="y_"]')?.value.trim();
+        const z = tr.querySelector('input[name^="z_"]')?.value.trim();
+        const wei = tr.querySelector('input[name^="wei_"]')?.value.trim();
+        const span = document.createElement("span");
+        span.textContent = [well, x, y, z, wei].filter(Boolean).join("  ·  ");
+        body.appendChild(span);
+    });
+
+    document.getElementById("modal-overlay").classList.add("on");
+}
+
+function confirmDelete() {
+    const tbody = document.getElementById("tbody");
     [...tbody.rows]
         .filter(tr => tr.querySelector('input[type="checkbox"]')?.checked)
         .forEach(tr => tr.remove());
     reindex();
     updateRowCount();
     syncSelectAll();
+    closeModal();
 }
+
+function closeModal() {
+    document.getElementById("modal-overlay").classList.remove("on");
+}
+
+document.getElementById("modal-overlay").addEventListener("click", e => {
+    if (e.target === e.currentTarget) closeModal();
+});
 
 function toggleSelectAll(master) {
     const tbody = document.getElementById("tbody");
