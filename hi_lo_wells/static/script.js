@@ -342,3 +342,11 @@ function copyResult() {
         }, 2000);
     });
 }
+
+function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("on");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove("on"), 2400);
+}

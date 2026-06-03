@@ -695,3 +695,25 @@ footer {
     justify-content: flex-end;
     gap: 8px;
 }
+
+.toast {
+    position: fixed;
+    bottom: 32px;
+    right: 18px;
+    background: var(--green);
+    color: #eef1f6;
+    font-size: .78rem;
+    font-weight: 700;
+    padding: 7px 14px;
+    border-radius: 5px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .25s, transform .25s;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.toast.on {
+    opacity: 1;
+    transform: translateY(0);
+}
