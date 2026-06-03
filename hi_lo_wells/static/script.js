@@ -5,9 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.documentElement.dataset.theme = savedTheme;
     updateThemeBtn(savedTheme);
 
-    const decimal = localStorage.getItem("decimal") || ",";
-    const thousands = localStorage.getItem("thousands") || ".";
-    const csvsep = localStorage.getItem("csvsep") || ";";
+    const decimal = localStorage.getItem("decimal") || ".";
+    const thousands = localStorage.getItem("thousands") || "";
+    const csvsep = localStorage.getItem("csvsep") || ",";
 
     document.getElementById("decimal").value = decimal;
     document.getElementById("thousands").value = thousands;
