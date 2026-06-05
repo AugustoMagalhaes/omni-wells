@@ -168,6 +168,20 @@ function deleteSelected() {
     );
     if (!selected.length) return;
 
+    const hasData = selected.some(tr =>
+        ["well", "x", "y", "z", "wei"].some(name =>
+            tr.querySelector(`input[name^="${name}_"]`)?.value.trim()
+        )
+    );
+
+    if (!hasData) {
+        selected.forEach(tr => tr.remove());
+        reindex();
+        updateRowCount();
+        syncSelectAll();
+        return;
+    }
+
     const body = document.getElementById("modal-body");
     body.innerHTML = "";
     selected.forEach(tr => {
@@ -176,8 +190,11 @@ function deleteSelected() {
         const y = tr.querySelector('input[name^="y_"]')?.value.trim();
         const z = tr.querySelector('input[name^="z_"]')?.value.trim();
         const wei = tr.querySelector('input[name^="wei_"]')?.value.trim();
+        const values = [well, x, y, z, wei];
         const span = document.createElement("span");
-        span.textContent = [well, x, y, z, wei].filter(Boolean).join("  ·  ");
+        span.textContent = values.some(v => v)
+            ? values.map(v => v || "—").join("  ·  ")
+            : "(empty)";
         body.appendChild(span);
     });
 
