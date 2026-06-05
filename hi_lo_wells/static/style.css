@@ -4,7 +4,29 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+body,
+header,
+.sidebar,
+.table-card,
+.result-card,
+.error-box,
+footer {
+    transition: background-color .15s ease, border-color .15s ease;
+}
+
+.theme-toggle,
+.btn,
+.field select,
+.field input,
+td input,
+.add-row-btn,
+.footer-link,
+.footer-icon-link,
+.copy-btn {
+    transition: background-color .15s ease, color .15s ease,
+        border-color .15s ease, filter .15s ease, transform .1s ease;
 }
 
 
