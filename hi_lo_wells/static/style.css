@@ -32,17 +32,18 @@ td input,
 
 :root {
     --bg: #f5f7fa;
-    --surface: #ffffff;
+    --surface: var(--gray-100);
     --surface2: #eef1f6;
     --border: #dde2ec;
     --border2: #c8d0e0;
     --accent: #3b7de8;
-    --green: #2e9e5b;
+    --green: #16a34a;
     --orange: #d4621a;
     --red: #c0392b;
     --text: #1a1f2e;
     --muted: #6b7599;
     --mono: 'Courier New', monospace;
+    --gray-100: #f3f4f6;
 }
 
 [data-theme="dark"] {
@@ -52,7 +53,6 @@ td input,
     --border: #252a3a;
     --border2: #2f3549;
     --accent: #5b9cf6;
-    --green: #52c77a;
     --orange: #f5854a;
     --red: #e05a5a;
     --text: #dce3f5;
@@ -205,12 +205,12 @@ header .sub {
 
 .btn-primary {
     background: var(--accent);
-    color: #fff;
+    color: var(--grey-100);
 }
 
 .btn-green {
     background: var(--green);
-    color: #fff;
+    color: var(--grey-100);
 }
 
 .btn-ghost {
@@ -528,7 +528,7 @@ td input.well-i {
 
 .btn-danger {
     background: var(--red);
-    color: #fff;
+    color: var(--grey-100);
 }
 
 thead th.th-check {
@@ -584,7 +584,7 @@ tbody tr.row-selected {
 
 .btn-outline-accent:hover {
     background: var(--accent);
-    color: #fff;
+    color: var(--grey-100);
 }
 
 footer {
@@ -723,7 +723,7 @@ footer {
     bottom: 32px;
     right: 18px;
     background: var(--green);
-    color: #eef1f6;
+    color: var(--grey-100);
     font-size: .78rem;
     font-weight: 700;
     padding: 7px 14px;
