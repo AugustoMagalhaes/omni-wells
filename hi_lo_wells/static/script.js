@@ -159,6 +159,11 @@ function addRow() {
 
     tbody.appendChild(tr);
     updateRowCount();
+
+    const tableScroll = document.querySelector(".table-scroll");
+    if (tableScroll) {
+        tableScroll.scrollTop = tableScroll.scrollHeight;
+    }
 }
 
 function deleteSelected() {
