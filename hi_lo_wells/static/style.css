@@ -361,7 +361,7 @@ tbody tr:nth-child(odd) {
 }
 
 tbody tr:nth-child(even) {
-    background: rgba(0, 0, 0, .025);
+    background: rgba(0, 0, 0, .05);
 }
 
 [data-theme="dark"] tbody tr:nth-child(even) {
@@ -443,7 +443,7 @@ td.td-check input[type="checkbox"] {
 }
 
 tbody tr.row-selected {
-    background: rgba(59, 125, 232, .08);
+    background: rgba(59, 125, 232, .12);
 }
 
 [data-theme="dark"] tbody tr.row-selected {
