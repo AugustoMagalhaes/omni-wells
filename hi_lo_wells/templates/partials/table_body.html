@@ -1,0 +1,26 @@
+{% if error is defined and error %}
+<tr>
+    <td colspan="6" class="td-error">{{ error }}</td>
+</tr>
+{% endif %}
+{% for row in rows %}
+<tr>
+    <td class="rn">{{ loop.index }}</td>
+    <td class="td-check">
+        <input type="checkbox"
+            onchange="this.closest('tr').classList.toggle('row-selected', this.checked); syncSelectAll()" />
+    </td>
+    <td><input type="text" name="well_{{ loop.index0 }}" value="{{ row[0] }}" autocomplete="off" spellcheck="false"
+            oninput="colorWell(this)"
+            class="{% if row[0]|trim|upper and (row[0]|trim|upper)[0] == 'I' %}well-i{% elif row[0]|trim %}well-p{% endif %}"
+            onkeydown="navKey(event)" /></td>
+    <td><input type="text" name="x_{{ loop.index0 }}" value="{{ row[1] }}" autocomplete="off"
+            onkeydown="navKey(event)" /></td>
+    <td><input type="text" name="y_{{ loop.index0 }}" value="{{ row[2] }}" autocomplete="off"
+            onkeydown="navKey(event)" /></td>
+    <td><input type="text" name="z_{{ loop.index0 }}" value="{{ row[3] }}" autocomplete="off"
+            onkeydown="navKey(event)" /></td>
+    <td><input type="text" name="wei_{{ loop.index0 }}" value="{{ row[4] }}" autocomplete="off"
+            onkeydown="navKey(event)" /></td>
+</tr>
+{% endfor %}

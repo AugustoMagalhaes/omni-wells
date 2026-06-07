@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hi-lo-wells</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js"></script>
+</head>
+
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+        <div class="modal-title">Delete selected rows?</div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<body>
+
+    <header>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"
+            stroke-linecap="round">
+            <circle cx="12" cy="5" r="2" />
+            <line x1="12" y1="7" x2="12" y2="12" />
+            <circle cx="6" cy="17" r="2" />
+            <circle cx="18" cy="17" r="2" />
+            <line x1="12" y1="12" x2="6" y2="15" />
+            <line x1="12" y1="12" x2="18" y2="15" />
+        </svg>
+        <span class="title">hi-lo-wells</span>
+        <span class="sub">— producer × injector matching</span>
+        <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☾ Dark</button>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar">
+
+            <div class="sb-section">
+                <div class="sb-label">Number format</div>
+                <div class="field">
+                    <label>Decimal separator</label>
+                    <select name="decimal" form="main-form" id="decimal">
+                        <option value=".">. (period)</option>
+                        <option value=",">, (comma)</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Thousands separator</label>
+                    <select name="thousands" form="main-form" id="thousands">
+                        <option value="">None</option>
+                        <option value=",">, (comma)</option>
+                        <option value=".">. (period)</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr class="divider" />
+
+            <div class="sb-section">
+                <div class="sb-label">Import CSV</div>
+                <div class="field">
+                    <label>Column separator</label>
+                    <select name="sep" id="csvsep">
+                        <option value=",">, (comma)</option>
+                        <option value=";">; (semicolon)</option>
+                        <option value="&#9;">Tab</option>
+                    </select>
+                </div>
+                <form id="import-form" hx-post="/import-csv" hx-target="#tbody" hx-encoding="multipart/form-data"
+                    hx-indicator="#spinner">
+                    <input type="hidden" name="thousands" id="imp-thousands" />
+                    <input type="hidden" name="decimal" id="imp-decimal" />
+                    <input type="hidden" name="sep" id="imp-sep" />
+                    <input type="file" name="file" id="import-csv" accept=".csv,.txt"
+                        onchange="clearTable(false); syncImportMeta(); this.form.requestSubmit()" />
+                    <button type="button" class="btn btn-ghost"
+                        style="display:flex; align-items:center; gap:6px; justify-content:center;"
+                        onclick="document.getElementById('import-csv').click()">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                        </svg>
+                        Open CSV file
+                    </button>
+                </form>
+                <p class="paste-hint">
+                    Or select a cell and paste with <kbd>Ctrl+V</kbd> directly from Excel.
+                </p>
+            </div>
+
+            <hr class="divider" />
+
+            <a href="{{ url_for('static', filename='sample_input.csv') }}" download="sample_input.csv"
+                class="btn btn-outline-accent">
+                ⬇ Download sample case
+            </a>
+            <hr class="divider" />
+
+            <div class="sb-section">
+                <div class="sb-label">Actions</div>
+                <button class="btn btn-primary" hx-post="/calculate" hx-include="#main-form" hx-target="#result-area"
+                    hx-indicator="#spinner">
+                    ⚙ Calculate matching
+                </button>
+                <button type="button" class="btn btn-ghost" onclick="addRow()">+ New row</button>
+                <button type="button" class="btn btn-danger" onclick="deleteSelected()">✕ Delete selected</button>
+                <button type="button" class="btn btn-ghost" onclick="clearTable()"
+                    style="display:flex; align-items:center; gap:6px; justify-content:center;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                        <path d="M10 11v6M14 11v6" />
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                    </svg>
+                    Clear table
+                </button>
+            </div>
+
+            <hr class="divider" />
+
+            <div class="sb-section">
+                <div class="sb-label">Result</div>
+                <button type="button" class="btn btn-green" id="dl-btn" style="display:none" onclick="downloadResult()">
+                    ⬇ Download CSV
+                </button>
+            </div>
+
+            <div id="spinner" class="spinner htmx-indicator"></div>
+
+        </aside>
+
+        <div class="content">
+            <form id="main-form" class="table-card">
+                <input type="hidden" name="row_count" id="row-count" value="{{ rows|length }}" />
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th class="th-check">
+                                    <input type="checkbox" id="select-all" onchange="toggleSelectAll(this)" />
+                                </th>
+                                <th>WELL</th>
+                                <th>X</th>
+                                <th>Y</th>
+                                <th>Z</th>
+                                <th>WEI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+                            {% include "partials/table_body.html" %}
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="add-row-btn" onclick="addRow()">+ add row</button>
+            </form>
+
+            <div class="result-area-wrap">
+                <div id="result-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-left"></div>
+        <div class="footer-center">
+            <a href="https://github.com/AugustoMagalhaes/hi-lo-wells" target="_blank" class="footer-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482
+                 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462
+                 -1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529
+                 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943
+                 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025
+                 A9.578 9.578 0 0 1 12 6.836a9.578 9.578 0 0 1 2.504.337c1.909-1.294 2.747-1.025
+                 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842
+                 -2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.744
+                 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                </svg>
+                Found a bug or want to contribute?
+            </a>
+        </div>
+        <div class="footer-right">
+            <span class="footer-by">Made by</span>
+            <span class="footer-name">Augusto Magalhães</span>
+            <span class="footer-sep">·</span>
+            <a href="https://github.com/AugustoMagalhaes" target="_blank" class="footer-icon-link" title="GitHub">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482
+               0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462
+               -1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529
+               2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943
+               0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025
+               A9.578 9.578 0 0 1 12 6.836a9.578 9.578 0 0 1 2.504.337c1.909-1.294 2.747-1.025
+               2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842
+               -2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.744
+               0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                </svg>
+            </a>
+            <a href="https://www.linkedin.com/in/augusto-moreira-magalhaes/" target="_blank" class="footer-icon-link"
+                title="LinkedIn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452H16.89v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853
+               0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9
+               1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337
+               7.433a1.98 1.98 0 0 1-1.98-1.98c0-1.093.887-1.98 1.98-1.98s1.98.887
+               1.98 1.98a1.98 1.98 0 0 1-1.98 1.98zm1.957 13.019H3.379V9h3.915v11.452z" />
+                </svg>
+            </a>
+        </div>
+    </footer>
+    <div class="toast" id="toast"></div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
