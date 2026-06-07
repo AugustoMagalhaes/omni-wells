@@ -36,9 +36,7 @@ def run_matching(df: pd.DataFrame) -> tuple[list[list[str]], str]:
             inj: float(np.linalg.norm(inj_data["COORD"] - prod_data["COORD"]))
             for inj, inj_data in injectors.items()
         }
-        distances[producer] = OrderedDict(
-            sorted(dists.items(), key=lambda item: item[1])
-        )
+        distances[producer] = OrderedDict(sorted(dists.items(), key=lambda item: item[1]))
 
     remaining_injs = list(injectors.keys())
     result: list[list[str]] = []
@@ -74,9 +72,7 @@ def parse_csv_content(content: str, sep: str) -> pd.DataFrame:
     for row in rows[1:]:
         if not any(cell.strip() for cell in row):
             continue
-        record = {
-            headers[i]: val.strip() for i, val in enumerate(row) if i < len(headers)
-        }
+        record = {headers[i]: val.strip() for i, val in enumerate(row) if i < len(headers)}
         records.append(record)
 
     return pd.DataFrame(records)
@@ -98,7 +94,7 @@ def rows_to_df(rows: list[list[str]], thousands: str, decimal: str) -> pd.DataFr
 
 def result_to_csv(result: list[list[str]]) -> str:
     out = io.StringIO()
-    writer = csv.writer(out)
+    writer = csv.writer(out, lineterminator="\n")
     writer.writerow(["PRODUCER", "INJECTOR"])
     for row in result:
         writer.writerow(row)
