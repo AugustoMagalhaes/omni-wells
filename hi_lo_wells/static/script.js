@@ -417,3 +417,14 @@ function showToast(msg) {
     clearTimeout(t._timer);
     t._timer = setTimeout(() => t.classList.remove("on"), 2400);
 }
+
+document.getElementById("import-csv").addEventListener("change", function () {
+    document.getElementById("tbody").innerHTML = "";
+    updateRowCount();
+    syncImportMeta();
+
+    setTimeout(() => {
+        document.getElementById("import-form").dispatchEvent(new Event("submit"));
+        this.value = "";
+    }, 50);
+});
