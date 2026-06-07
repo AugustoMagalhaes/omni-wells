@@ -4,3 +4,4 @@ __pycache__
 mock/*
 *egg-info*
 .coverage
+.pytest_cache*
