@@ -31,9 +31,7 @@ class WebPage(QWebEnginePage):
             self._main_window.raise_()
             QApplication.processEvents()
             view_page = self._main_window.centralWidget().page()
-            view_page.runJavaScript(
-                f"showToast('✓ Link {url.toString()} opened in browser')"
-            )
+            view_page.runJavaScript(f"showToast('✓ Link {url.toString()} opened in browser')")
         self._pending_page.deleteLater()
 
 
@@ -99,9 +97,7 @@ def main():
     view.setPage(page)
 
     page.profile().downloadRequested.connect(lambda dl: handle_download(dl, view))
-    view.page().urlChanged.connect(
-        lambda: view.page().runJavaScript("window._qtApp = true;")
-    )
+    view.page().urlChanged.connect(lambda: view.page().runJavaScript("window._qtApp = true;"))
 
     view.setUrl(QUrl(f"http://127.0.0.1:{port}"))
     window.setCentralWidget(view)
