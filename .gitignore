@@ -3,3 +3,4 @@ vscode*
 __pycache__
 mock/*
 *egg-info*
+.coverage
