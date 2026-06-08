@@ -148,7 +148,7 @@ def _find_free_port(start: int = 5000) -> int:
                 port += 1
 
 
-def main():
+def main() -> None:  # pragma: no cover
     port = _find_free_port()
     print(f"  hi-lo-wells  →  http://127.0.0.1:{port}")
     app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
