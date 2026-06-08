@@ -36,6 +36,9 @@ addopts = "--cov=hi_lo_wells --cov-report=term-missing --cov-report=html"
 source = ["hi_lo_wells"]
 omit = ["hi_lo_wells/qt_app.py"]
 
+[tool.coverage.report]
+exclude_lines = ["if __name__ == .__main__.:", "pragma: no cover"]
+
 [tool.ruff]
 target-version = "py312"
 line-length = 100
