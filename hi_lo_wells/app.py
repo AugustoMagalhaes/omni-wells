@@ -1,6 +1,7 @@
 import os
 import socket
 from datetime import datetime
+from pathlib import Path
 
 from flask import Flask, Response, jsonify, render_template, request, session
 
@@ -121,9 +122,7 @@ def open_file_dialog():
 
 @app.route("/save-file-dialog")
 def save_file_dialog():
-    return jsonify(
-        {"dir": load_prefs().get("last_download_dir", str(Path.home() / "Downloads"))}
-    )
+    return jsonify({"dir": load_prefs().get("last_download_dir", str(Path.home() / "Downloads"))})
 
 
 @app.route("/read-file", methods=["POST"])
@@ -149,7 +148,7 @@ def _find_free_port(start: int = 5000) -> int:
                 port += 1
 
 
-def main():
+def main() -> None:  # pragma: no cover
     port = _find_free_port()
     print(f"  hi-lo-wells  →  http://127.0.0.1:{port}")
     app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
