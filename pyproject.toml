@@ -29,9 +29,9 @@ include = ["hi_lo_wells*"]
 hi_lo_wells = ["templates/*", "static/*"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "--cov=hi_lo_wells --cov-report=term-missing --cov-report=html"
+addopts = "--cov=hi_lo_wells --cov-branch --cov-report=term-missing --cov-report=html"
 
+testpaths = ["tests"]
 [tool.coverage.run]
 source = ["hi_lo_wells"]
 omit = ["hi_lo_wells/qt_app.py"]
