@@ -38,6 +38,7 @@ omit = ["hi_lo_wells/qt_app.py"]
 
 [tool.coverage.report]
 exclude_lines = ["if __name__ == .__main__.:", "pragma: no cover"]
+fail_under = 80
 
 [tool.ruff]
 target-version = "py312"
