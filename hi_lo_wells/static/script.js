@@ -7,6 +7,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("csvsep").value = prefs.csvsep;
     document.documentElement.dataset.theme = prefs.theme;
     updateThemeBtn(prefs.theme);
+    validateSeparators();
+});
+
+document.getElementById("decimal").addEventListener("change", e => {
+    savePrefs({ decimal: e.target.value });
+    setTimeout(validateSeparators, 0);
+});
+
+document.getElementById("thousands").addEventListener("change", e => {
+    savePrefs({ thousands: e.target.value });
+    setTimeout(validateSeparators, 0);
+});
+
+document.getElementById("csvsep").addEventListener("change", e => {
+    savePrefs({ csvsep: e.target.value });
+    setTimeout(validateSeparators, 0);
 });
 
 function savePrefs(patch) {
@@ -17,15 +33,6 @@ function savePrefs(patch) {
     });
 }
 
-document.getElementById("decimal").addEventListener("change", e => {
-    savePrefs({ decimal: e.target.value });
-});
-document.getElementById("thousands").addEventListener("change", e => {
-    savePrefs({ thousands: e.target.value });
-});
-document.getElementById("csvsep").addEventListener("change", e => {
-    savePrefs({ csvsep: e.target.value });
-});
 
 function toggleTheme() {
     const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
@@ -428,3 +435,21 @@ document.getElementById("import-csv").addEventListener("change", function () {
         this.value = "";
     }, 50);
 });
+
+function validateSeparators() {
+    const decimal = document.getElementById("decimal").value;
+    const thousands = document.getElementById("thousands").value;
+    const csvsep = document.getElementById("csvsep").value;
+
+    document.querySelectorAll("#thousands option").forEach(opt => {
+        opt.disabled = [decimal, csvsep].includes(opt.value) && opt.value
+    });
+
+    document.querySelectorAll("#decimal option").forEach(opt => {
+        opt.disabled = [thousands, csvsep].includes(opt.value)
+    });
+
+    document.querySelectorAll("#csvsep option").forEach(opt => {
+        opt.disabled = opt.value === decimal || (thousands && opt.value === thousands);
+    });
+}
