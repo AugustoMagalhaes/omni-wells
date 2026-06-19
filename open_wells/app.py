@@ -1,3 +1,4 @@
+import os
 import socket
 from datetime import datetime
 from pathlib import Path
@@ -9,6 +10,7 @@ from open_wells.prefs import load as load_prefs
 from open_wells.prefs import save as save_prefs
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "open-wells-dev")
 
 COLS = ["WELL", "X", "Y", "Z", "WEI"]
 DEFAULT_ROWS = 1
