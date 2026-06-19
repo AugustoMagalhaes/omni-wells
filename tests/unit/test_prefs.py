@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from hi_lo_wells.prefs import DEFAULTS, load, save
+from open_wells.prefs import DEFAULTS, load, save
 
 
 def test_load_returns_defaults_when_no_file(tmp_path):
