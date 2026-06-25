@@ -6,3 +6,4 @@ mock/*
 .coverage
 .pytest_cache*
 htmlcov*
+dist/
