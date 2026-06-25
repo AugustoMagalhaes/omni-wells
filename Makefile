@@ -36,7 +36,13 @@ test:
 	$(COMPOSE) run --rm -v $(PWD)/tests:/app/tests app pytest tests/ -v
 
 dist:
-	$(COMPOSE) run --rm app python -m build
+	python -m build
+
+dist-check:
+	twine check dist/*
+
+publish:
+	twine upload --repository testpypi dist/*
 
 clean:
 	find . -type d -name __pycache__  -exec rm -rf {} + 2>/dev/null || true
