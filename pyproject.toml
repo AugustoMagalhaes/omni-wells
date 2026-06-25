@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "omni-wells"
-version = "0.1.0"
+version = "0.1.1"
 description = "Desktop tool for producer–injector well matching based on economic index and 3D distance, implementing the fast opening schedule procedure by Diniz et al."
 readme = { file = "README_pypi.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
