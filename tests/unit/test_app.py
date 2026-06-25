@@ -1,7 +1,7 @@
 import socket
 from unittest.mock import patch
 
-from open_wells.app import _find_free_port
+from omni_wells.app import _find_free_port
 
 
 def test_find_free_port_returns_5000_when_available():
